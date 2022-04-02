@@ -1,9 +1,17 @@
 import React, { useMemo } from 'react'
-
-import { Container, Header, Input, List, FooterList } from './styles'
+import { BsSunFill, BsMoonFill } from 'react-icons/bs'
+import {
+  Container,
+  Header,
+  Input,
+  List,
+  FooterList,
+  ToggleThemeButton
+} from './styles'
 
 import { ListItem } from '../../components/ListItem'
 import { useTask } from '../../hooks/useTask'
+import { useTheme } from '../../hooks/useTheme'
 
 export const Home: React.FC = () => {
   const {
@@ -14,6 +22,8 @@ export const Home: React.FC = () => {
     clearCompleted,
     deleteTask
   } = useTask()
+
+  const { toggleTheme, themeName } = useTheme()
 
   const leftTasks = useMemo(
     () => tasks.filter(task => !task.done).length,
@@ -28,7 +38,17 @@ export const Home: React.FC = () => {
   return (
     <Container>
       <Header>
-        <h1>TODO</h1>
+        <div className="top">
+          <h1>TODO</h1>
+
+          <ToggleThemeButton onClick={toggleTheme}>
+            {themeName === 'dark' ? (
+              <BsSunFill color="#fff700" />
+            ) : (
+              <BsMoonFill color="#2f80ed" />
+            )}
+          </ToggleThemeButton>
+        </div>
 
         <Input onSubmit={handleSubmit}>
           <input

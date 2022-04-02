@@ -19,10 +19,34 @@ export const Header = styled.header`
   gap: 20px;
   margin-bottom: 20px;
 
-  h1 {
-    letter-spacing: 7px;
-    color: var(--text);
-    font-size: 38px;
+  .top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      letter-spacing: 7px;
+      color: var(--text);
+      font-size: 38px;
+    }
+  }
+`
+
+export const ToggleThemeButton = styled.button`
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--backgroundSecondary);
+  border: solid 1px var(--border);
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
 `
 

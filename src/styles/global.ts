@@ -6,6 +6,8 @@ export const GlobalStyles = createGlobalStyle`
   padding: 0;
   box-sizing: border-box;
   font-family: 'Titillium Web', sans-serif;
+
+  transition: all 200ms ease-in-out;
 }
 
 :root {
