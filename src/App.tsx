@@ -1,15 +1,22 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ThemeProvider } from 'styled-components'
 import { Home } from './pages/Home'
 
-import './styles/globalStyles.scss'
+import { GlobalStyles } from './styles/global'
+
+import { themes } from './styles/themes'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={themes.dark}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+
+        <GlobalStyles />
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

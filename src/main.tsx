@@ -1,3 +1,9 @@
 import { render } from 'react-dom'
 import App from './App'
-render(<App />, document.getElementById('root'))
+import { TaskProvider } from './contexts/TaskContext'
+render(
+  <TaskProvider>
+    <App />
+  </TaskProvider>,
+  document.getElementById('root')
+)

@@ -1,87 +1,69 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { useMemo } from 'react'
 
-import style from './Home.module.scss'
+import { Container, Header, Input, List, FooterList } from './styles'
 
-import { v4 as uuidv4 } from 'uuid'
-
-interface TaskProps {
-  id: string
-  name: string
-  done: boolean
-}
+import { ListItem } from '../../components/ListItem'
+import { useTask } from '../../hooks/useTask'
 
 export const Home: React.FC = () => {
-  const [tasks, setTasks] = useState<TaskProps[]>(() => {
-    const storageItem = localStorage.getItem('tasks')
+  const {
+    handleSubmit,
+    handleInput,
+    tasks,
+    input,
+    clearCompleted,
+    deleteTask
+  } = useTask()
 
-    if (storageItem) {
-      return JSON.parse(storageItem)
-    } else return []
-  })
+  const leftTasks = useMemo(
+    () => tasks.filter(task => !task.done).length,
+    [tasks]
+  )
 
-  const [input, setInput] = useState<string>('')
-
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value)
-  }
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-
-    setTasks([...tasks, { id: uuidv4(), name: input, done: false }])
-    localStorage.setItem(
-      'tasks',
-      JSON.stringify([...tasks, { id: uuidv4(), name: input, done: false }])
-    )
-    setInput('')
-  }
-
-  const handleDone = (index: string) => {
-    setTasks((prev: TaskProps[]) => {
-      const doneTask = prev.reduce((acc, task) => {
-        if (task.id === index) {
-          if (task.done) return [...acc, { ...task, done: false }]
-          return [...acc, { ...task, done: true }]
-        } else {
-          return [...acc, task]
-        }
-      }, [] as TaskProps[])
-
-      localStorage.setItem('tasks', JSON.stringify(doneTask))
-      return doneTask
-    })
-  }
+  const completedTasks = useMemo(
+    () => tasks.filter(task => task.done).length,
+    [tasks]
+  )
 
   return (
-    <div className={style.container}>
-      <div className={style.headerTodo}>
-        <h1>Lista de Tarefas</h1>
+    <Container>
+      <Header>
+        <h1>TODO</h1>
 
-        <form className={style.input} onSubmit={handleSubmit}>
-          <label htmlFor="to-do">Nova tarefa: </label>
-          <input type="text" value={input} onChange={handleInput} />
-        </form>
-      </div>
+        <Input onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={handleInput}
+            placeholder="Create a new todo..."
+          />
+          <button type="submit">Add</button>
+        </Input>
+      </Header>
 
       {tasks.length === 0 ? (
-        <h2>Nenhuma tarefa cadastrada</h2>
+        <strong>Nothing to do...</strong>
       ) : (
-        <ul className={style.list}>
+        <List>
           {tasks.map(task => (
-            <li key={task.id} className={task.done ? style.done : ''}>
-              <div className={style.formGroup}>
-                <input
-                  type="checkbox"
-                  id={task.id}
-                  onChange={() => handleDone(task.id)}
-                />
-                <label htmlFor={task.id}></label>
-              </div>
+            <ListItem key={task.id} done={task.done} id={task.id}>
               <span>{task.name}</span>
-            </li>
+              <button onClick={() => deleteTask(task.id)}>&#x2715;</button>
+            </ListItem>
           ))}
-        </ul>
+          <FooterList>
+            <span>
+              {leftTasks === 0
+                ? 'All tasks completed!'
+                : `${leftTasks} tasks left`}
+            </span>
+
+            {completedTasks > 0 && (
+              <button onClick={clearCompleted}>Clear completed</button>
+            )}
+          </FooterList>
+        </List>
       )}
-    </div>
+    </Container>
   )
 }
